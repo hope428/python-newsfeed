@@ -16,4 +16,6 @@ def login():
 
 @bp.route('/post/<id>')
 def single(id):
-    return render_template('single-post.html')
+    db = get_db()
+    currentPost = db.query(Post).filter(Post.id == id).one()
+    return render_template('single-post.html', post=currentPost)
