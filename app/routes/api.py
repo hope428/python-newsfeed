@@ -138,3 +138,20 @@ def update(id):
         return jsonify(message = "Post not found"), 500
     
     return '', 204
+
+@bp.route('/posts/<id>', methods=['DELETE'])
+def delete(id):
+    db = get_db()
+
+    try:
+        post = db.query(Post).filter(Post.id == id).one()
+
+        db.delete(post)
+        db.commit()
+    except:
+        print(sys.exc_info()[0])
+
+        db.rollback()
+        return jsonify(message = "Post not found"), 500
+    
+    return '', 204
