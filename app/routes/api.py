@@ -56,7 +56,7 @@ def logout():
     session.clear()
     return '', 204
 
-@bp.route('/comments', method=['POST'])
+@bp.route('/comments', methods=['POST'])
 def comment():
     data = request.get_json()
     db = get_db()
@@ -67,8 +67,14 @@ def comment():
             post_id = data['post_id'],
             user_id = session.get('user_id')
         )
+
+        db.add(newComment)
+        db.commit()
     except:
         print(sys.exc_info()[0])
 
         db.rollback()
         return jsonify(message = 'Comment failed'), 500
+    
+    return jsonify(id = newComment.id)
+
