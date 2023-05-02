@@ -99,3 +99,25 @@ def upvote():
         return jsonify(message = 'Upvote failed'), 500
     
     return '', 204
+
+@bp.route('/posts', methods=['POST'])
+def create():
+    data = request.get_json()
+    db = get_db()
+
+    try:
+        newPost = Post(
+            title = data['title'],
+            post_url = data['post_url'],
+            user_id = session.get('user_id')
+        )
+
+        db.add(newPost)
+        db.commit()
+    except:
+        print(sys.exc_info()[0])
+
+        db.rollback()
+        return jsonify(message = 'Couldn not create post'), 500
+    
+    return jsonify(id = newPost.id)
