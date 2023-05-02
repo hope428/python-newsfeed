@@ -118,6 +118,23 @@ def create():
         print(sys.exc_info()[0])
 
         db.rollback()
-        return jsonify(message = 'Couldn not create post'), 500
+        return jsonify(message = 'Could not create post'), 500
     
     return jsonify(id = newPost.id)
+
+@bp.route('/posts/<id>', methods=['PUT'])
+def update(id):
+    data = request.get_json()
+    db = get_db()
+
+    try:
+        post = db.query(Post).filter(Post.id == id).one()
+        post.title = data['title']
+        db.commit()
+    except:
+        print(sys.exc_info()[0])
+
+        db.rollback()
+        return jsonify(message = "Post not found"), 500
+    
+    return '', 204
